@@ -45,7 +45,7 @@ class Faq(commands.Cog):
         return self.model.encode(questions, convert_to_tensor=True) if questions else []
 
     # This command will allow an administrator to add a FAQ to the list of FAQs.
-    @app_commands.command(name="addfaq", description="Add a new FAQ question/answer pair. (ADMINISTRATOR ONLY)")
+    @app_commands.command(name="add_faq", description="Add a new FAQ question/answer pair. (ADMINISTRATOR ONLY)")
     @app_commands.describe(question="The question you wish to answer.", answer="The answer to the question.")
     @app_commands.checks.has_permissions(administrator=True)
     async def add_faq(self, interaction: discord.Interaction, question: str, answer: str):

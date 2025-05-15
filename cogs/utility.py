@@ -29,6 +29,7 @@ class Utility(commands.Cog):
         is_admin = interaction.user.guild_permissions.administrator
         if is_admin:
             help_message += (f"\n\nAdministrator Commands:\n\n"
+                             "/add_faq: Adds a new FAQ question/answer pair.\n"
                              "/generate_tokens: Generates a given number of tokens to be used to assign roles.\n"
                              "/clear_tokens: Clears tokens from the database.\n"
                              "/remove_roles: Remove the given role from all users.\n"
