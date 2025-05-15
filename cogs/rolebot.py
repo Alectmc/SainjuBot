@@ -23,6 +23,7 @@ class Rolebot(commands.Cog):
         self.TOKENS_FILE = self.config.get("Rolebot", "TOKENS_FILE", fallback="./data/tokens.json")
         self.ROLE_CHANNEL_NAME = self.config.get("Rolebot", "ROLE_CHANNEL_NAME", fallback="rolebot")
         self.NUM_BYTES = int(self.config.get("Rolebot", "NUM_BYTES", fallback=16))
+        self.VISITOR_NAME = self.config.get("Rolebot", "VISITOR_NAME", fallback="Visitor")
         self.tokens = self.load_tokens()
 
     # Helper function to load the tokens from the tokens JSON file.
@@ -195,9 +196,11 @@ class Rolebot(commands.Cog):
             # The callback method will iterate through all the server members and remove the role if they
             # have the role specified.
             async def callback(self, button_interaction: discord.Interaction):
+                visitor_role = discord.utils.get(button_interaction.guild.roles, name=self.view.cog.VISITOR_NAME)
                 members = [member for member in button_interaction.guild.members if self.role in member.roles]
                 for member in members:
                     await member.remove_roles(self.role)
+                    await member.add_roles(visitor_role)
 
                 # Report that the role has been removed from all users.
                 embed = discord.Embed(title="Role Bot", description=f"{self.role.name} removed from all users!", color=discord.Color.green())
@@ -215,6 +218,7 @@ class Rolebot(commands.Cog):
         # Prompt the administrator for the role to remove from all users.
         embed = discord.Embed(title="Role Bot", description="Choose the role to remove from all users.", color=discord.Color.orange())
         await interaction.response.send_message(embed=embed, view=RemoveRoleView(self), ephemeral=True)
+
 
 # Set up the cog to be used for the bot.
 async def setup(bot):
