@@ -135,8 +135,8 @@ class Rolebot(commands.Cog):
                         return
 
                     await interaction.user.add_roles(role)
-                    self.tokens[role_name].remove(token)
-                    self.save_tokens()
+                    # self.tokens[role_name].remove(token)
+                    # self.save_tokens()
                     embed = discord.Embed(title= "Role Bot", description=f"Token redeemed! I've assigned you to the **{role_name}** role!", color=discord.Color.green())
                     await interaction.response.send_message(embed=embed, ephemeral=True)
                     return
