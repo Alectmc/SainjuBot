@@ -57,16 +57,19 @@ class Rolebot(commands.Cog):
         return roles
 
     # This command will allow any administrator to generate the specified number of unique tokens to be used
-    # to claim a role in the server.
-    @app_commands.command(name="generate_tokens", description="Generate tokens to be redeemed for roles. (ADMINISTATOR ONLY)")
-    @app_commands.describe(number="The token to be redeemed form a role.")
+    # to claim a role in the server. By default, only one token will be generated but support for multiple one-use tokens can be added by uncommenting
+    # the sections specified in this method as well as the redeem_tokens method.
+    @app_commands.command(name="generate_tokens", description="Generate a token to be redeemed for roles. (ADMINISTATOR ONLY)")
+    # @app_commands.describe(number="The token to be redeemed form a role.") UNCOMMENT THIS TO SUPPORT MULTIPLE TOKENS THAT CAN BE REDEEMED ONLY ONCE
     @app_commands.checks.has_permissions(administrator=True)
-    async def generate_tokens(self, interaction: discord.Interaction, number: int):
-        # Ensure the user has entered a valid number of tokens to generate (greater than 0).
-        if number <= 0:
-            embed = discord.Embed(title="Role Bot", description="Invalid number of tokens to generate",
-                                  color=discord.Color.red())
-            await interaction.response.send_message(embed=embed, ephemeral=True)
+    async def generate_tokens(self, interaction: discord.Interaction): #, number: int): UNCOMMENT THIS AND REMOVE THE ): AFTER discord.Interaction TO SUPPORT MULTIPLE TOKENS THAT CAN BE REDEEMED ONLY ONCE
+        # Ensure the user has entered a valid number of tokens to generate (greater than 0). UNCOMMENT THIS  SECTION TO SUPPORT MULTIPLE TOKENS THAT CAN BE REDEEMED ONLY ONCE
+        # if number <= 0:
+        #     embed = discord.Embed(title="Role Bot", description="Invalid number of tokens to generate",
+        #                           color=discord.Color.red())
+        #     await interaction.response.send_message(embed=embed, ephemeral=True)
+
+        number = 1 # IF USING MULTIPLE TOKENS, REMOVE THIS LINE.
 
         # Get the list of roles.
         roles = self.get_roles(interaction.guild.roles)
@@ -88,7 +91,7 @@ class Rolebot(commands.Cog):
                 tokens = self.view.cog.generate_unique_tokens(number)
                 self.view.cog.tokens.setdefault(self.role.name, []).extend(tokens)
                 self.view.cog.save_tokens()
-                embed_button = discord.Embed(title="Role Bot", description=f"Tokens for {self.role.name}:\n" + "\n".join(tokens), color=discord.Color.green())
+                embed_button = discord.Embed(title="Role Bot", description=f"Token for {self.role.name}:\n" + "\n".join(tokens), color=discord.Color.green())
                 await button_interaction.response.send_message(embed=embed_button, ephemeral=True)
                 self.view.stop()
 
@@ -135,7 +138,7 @@ class Rolebot(commands.Cog):
                         return
 
                     await interaction.user.add_roles(role)
-                    # self.tokens[role_name].remove(token)
+                    # self.tokens[role_name].remove(token) UNCOMMENT THESE 2 LINES TO SUPPORT MULTIPLE TOKENS THAT CAN BE REDEEMED ONLY ONCE
                     # self.save_tokens()
                     embed = discord.Embed(title= "Role Bot", description=f"Token redeemed! I've assigned you to the **{role_name}** role!", color=discord.Color.green())
                     await interaction.response.send_message(embed=embed, ephemeral=True)
